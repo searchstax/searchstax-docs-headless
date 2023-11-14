@@ -29,6 +29,7 @@ services:
       - searchstax-docs-headless-cms-data:/var/www/html
       - ./configs/php.ini:/usr/local/etc/php/php.ini
       - ./configs/setup.sh:/usr/local/bin/setup.sh
+      - ./configs/services.yml:/opt/drupal/web/sites/default/services.yml
     entrypoint: bash /usr/local/bin/setup.sh
     depends_on:
       - searchstax-docs-headless-db
