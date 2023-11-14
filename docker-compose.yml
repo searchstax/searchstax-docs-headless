@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  searchstax-docs-headless-db:
+    container_name: searchstax-docs-headless-db
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: drupaldb
+      POSTGRES_USER: drupaluser
+      POSTGRES_PASSWORD: drupalpassword
+      POSTGRES_EXTENSIONS: pg_trgm
+    volumes:
+      - searchstax-docs-headless-db-data:/var/lib/postgresql/data
+      - ./configs/postgres-extensions.sql:/docker-entrypoint-initdb.d/postgres-extensions.sql
+      - ./configs/drupaldb.pgsql:/usr/local/bin/drupaldb.pgsql
+    ports:
+      - 5434:5432
+    networks:
+      - searchstax-docs-headless
+
+  searchstax-docs-headless-cms:
+    container_name: searchstax-docs-headless-cms
+    image: drupal:10.1.3-php8.2-apache
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    volumes:
+      - searchstax-docs-headless-cms-data:/var/www/html
+      - ./configs/php.ini:/usr/local/etc/php/php.ini
+      - ./configs/setup.sh:/usr/local/bin/setup.sh
+    entrypoint: bash /usr/local/bin/setup.sh
+    depends_on:
+      - searchstax-docs-headless-db
+    networks:
+      - searchstax-docs-headless
+
+  searchstax-docs-headless-app:
+    container_name: searchstax-docs-headless-app
+    image: node:16-alpine
+    ports:
+      - 3010:3010
+    build:
+      context: ./react-headless
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./react-headless:/app
+      - /app/node_modules
+
+volumes:
+  searchstax-docs-headless-cms-data:
+  searchstax-docs-headless-db-data:
+
+networks:
+  searchstax-docs-headless:
