@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './NavMenu.css'
 import { Link } from "react-router-dom";
 
-import type { menuLink, urlAlias } from '../interface/drupal';
+import type { menuLink, urlAlias } from '../../interface/drupal';
 
 // MUI
 import Collapse from '@mui/material/Collapse';
@@ -17,16 +17,16 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 function NavMenu(props: { itemID?: string, navMenu?: menuLink[], aliases?: urlAlias[], level?: number }) {
   const {
     itemID = '',
-    navMenu = null,
+    navMenu = undefined,
     aliases = [],
     level = 0,
   } = props;
-  const [item, setItem] = useState<menuLink>(null);
+  const [item, setItem] = useState<menuLink | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(true);
   const [subItems, setSubItems] = useState<menuLink[]>([]);
 
   useEffect(() => {
-    if (navMenu !== null) {
+    if (navMenu !== undefined) {
       setSubItems(
         navMenu.filter((item) => {
           return item.attributes.parent === 'menu_link_content:' + itemID
@@ -45,7 +45,7 @@ function NavMenu(props: { itemID?: string, navMenu?: menuLink[], aliases?: urlAl
 
   return (
     <>
-      {navMenu !== null && item ? (
+      {navMenu !== undefined && item ? (
         <List
           sx={{width: 320, bgcolor: 'background.paper' }}
           component="nav"
@@ -62,7 +62,7 @@ function NavMenu(props: { itemID?: string, navMenu?: menuLink[], aliases?: urlAl
               <Collapse in={open}>
                 {subItems
                 .map((menu, index) => (
-                  <NavMenu key={index} itemID={menu.id} parentID={item.id} navMenu={navMenu} aliases={aliases} level={level + 1} />
+                  <NavMenu key={index} itemID={menu.id} navMenu={navMenu} aliases={aliases} level={level + 1} />
                 ))}
               </Collapse>
               </>

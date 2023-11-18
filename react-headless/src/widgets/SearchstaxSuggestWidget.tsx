@@ -1,12 +1,14 @@
 
 import { SearchstaxWrapper } from "@searchstax-inc/searchstudio-ux-react";
 import { SearchstaxInputWidget } from "@searchstax-inc/searchstudio-ux-react";
-import { config }  from '../config.js';
+import { config } from '../config.ts';
 
 import type {
     ISearchstaxSuggestResponse,
     ISearchstaxSuggestProps,
-    ISearchstaxSuggestion
+    ISearchstaxSuggestion,
+    ISearchstaxParsedResult,
+    ISearchObject
 } from "@searchstax-inc/searchstudio-ux-js";
 
 // MUI
@@ -33,6 +35,7 @@ function InputTemplate(
         <Box sx={{width: 300}}>
           <Autocomplete
             freeSolo
+            options={[]}
             renderInput={(params) => <TextField {...params} label="Search For..." />}
             sx={{backgroundColor: '#FFF'}}
           />

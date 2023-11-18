@@ -22,8 +22,8 @@ function searchSortingTemplate(
               color="primary"
               value={selectedSorting}
               exclusive
-              onChange={(e) => {
-                orderChange(e.target.value);
+              onChange={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                orderChange((e.target as HTMLInputElement).value);
               }}
               size="small"
             >

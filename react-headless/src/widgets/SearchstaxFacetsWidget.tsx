@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import React, { createRef } from "react";
 import { SearchstaxFacetsWidget } from "@searchstax-inc/searchstudio-ux-react";
 
 import type {
@@ -23,7 +23,7 @@ function facetsTemplateDesktop(
     toggleFacetGroup: (name: string) => void,
     selectFacet: (
       index: string,
-      event: React.MouseEvent<HTMLElement, MouseEvent>,
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
       data: IFacetValueData,
       isInput: boolean
     ) => void,
@@ -55,6 +55,7 @@ function facetsTemplateDesktop(
                 </div>
                 <div className="searchstax-facet-values-container">
                   {facet.values.map(
+                    //@ts-ignore
                     (facetValue: IFacetValueData, key: string) => {
                       facetContainers[key + facet.name] = createRef();
                       return (
@@ -71,15 +72,14 @@ function facetsTemplateDesktop(
                                 className="searchstax-facet-input-checkbox"
                                 checked={isChecked(facetValue)}
                                 disabled={facetValue.disabled}
-                                onChange={(e) => {
+                                onChange={(e: any) => {
                                   selectFacet(key + facet.name, e, facetValue, false);
                                 }}
-                                ref={facetContainers[key + facet.name]}
                               />
                             }
                             label={`${facetValue.value} (${facetValue.count})`}
-                            onChange={(e) => {
-                              selectFacet(key + facet.name, e, facetValue, true);
+                            onChange={(e: React.SyntheticEvent<Element, Event>) => {
+                              selectFacet(key + facet.name, e as React.MouseEvent<HTMLDivElement, MouseEvent>, facetValue, true);
                             }}
                           />
                         </div>
@@ -116,6 +116,8 @@ function facetsTemplateDesktop(
     return (
       <SearchstaxFacetsWidget
         facetingType="and"
+        itemsPerPageDesktop={9999999}
+        itemsPerPageMobile={9999999}
         specificFacets={undefined}
         facetsTemplateDesktop={facetsTemplateDesktop}
       ></SearchstaxFacetsWidget>

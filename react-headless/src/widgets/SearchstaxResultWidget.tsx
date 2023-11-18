@@ -62,7 +62,7 @@ function afterLinkClick(result: ISearchstaxParsedResult) {
               key={index}
               sx={{m: 1, p: 1, textDecoration: 'none'}}
               component={Link}
-              to={searchResult.url}
+              to={searchResult.url ? searchResult.url : ''}
               variant="outlined"
             >
               <Stack direction="row" spacing={1}>

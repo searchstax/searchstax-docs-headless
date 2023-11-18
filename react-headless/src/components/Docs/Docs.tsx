@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import './Docs.css'
 import { Link, useNavigate } from "react-router-dom";
 import { Parser, ProcessNodeDefinitions } from "html-to-react";
@@ -7,7 +7,7 @@ import { fetchArticleFromID, fetchAliases } from "../../api/drupal";
 import { popular } from '../../api/popular';
 
 import type { popularResult } from '../../interface/popularResults';
-import type { article, menuLink, urlAlias } from '../interface/drupal';
+import type { article, menuLink, urlAlias } from '../../interface/drupal';
 
 import Curl from '../Curl/Curl';
 import Code from '../Code/Code';
@@ -37,10 +37,10 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   const {
     url = '',
     section = '',
-    navMenu = null,
+    navMenu = undefined,
   } = props;
-  const [selectedTab, setSelectedTab] = React.useState(0);
-  const [aliases, setAliases] = useState<urlAlias[] | null>([]);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [aliases, setAliases] = useState<urlAlias[] | undefined>([]);
   const [showCodeDrawer, setShowCodeDrawer] = useState<boolean>(false);
   const [reactContent, setReactContent] = useState(null);
   const [menuParentID, setMenuParentID] = useState<string>('');
@@ -50,7 +50,7 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   const scrollToTopTrigger = useScrollTrigger({ target: scrollTarget });
 
   useEffect(() => {
-    void fetchAliases().then((data: urlAlias) => {
+    void fetchAliases().then((data: urlAlias[]) => {
       setAliases(data);
     });
     void popular('en').then(data => {
@@ -59,11 +59,15 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   }, []);
 
   useEffect(() => {
-    if (navMenu !== null && section !== '') {
+    if (navMenu !== undefined && section !== '') {
       const firstMenuItem = navMenu
         .filter((item) => { return item.attributes.menu_name === section && item.attributes.parent === null })
         .sort((a, b) => { return a.attributes.weight < b.attributes.weight ? -1 : 1 })[0];
       setMenuParentID(firstMenuItem.id);
+      setSelectedTab(0);
+    }
+    else {
+      setMenuParentID('-1');
       setSelectedTab(0);
     }
   }, [navMenu, section]);
@@ -73,36 +77,45 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
       const drupalPath = aliases.find((page) => { return page.attributes.alias === url});
       if (drupalPath) {
         void fetchArticleFromID(drupalPath.attributes.path.replace('/node/','')).then((data: article) => {
+          console.log(data);
           if (data.data) {
-            document.title = data.data[0].attributes.title;
+            if (data.data[0].attributes.title) {
+              document.title = data.data[0].attributes.title;
+            }
 
             const htmlInput = data.data[0].attributes.body.value;
             const isValidNode = () => { return true; };
-            const processNodeDefinitions = ProcessNodeDefinitions(React);
+            const processNodeDefinitions = ProcessNodeDefinitions();
             const processingInstructions = [
               {
-                shouldProcessNode: (node) => { return node.name && node.name === 'a'; },
-                processNode: (node, children, index) => {
+                shouldProcessNode: (node: any) => { return node.name && node.name === 'a'; },
+                processNode: (node: any, _children: any, index: number) => {
                   return React.createElement(React.Fragment, {key: index,}, [
                     <a
                       key={index}
                       href={node.attribs.href}
-                      onClick={(e) => { handleLink(e, node.attribs.href); }}
-                    >
-                      {node.children[0].data}
-                    </a>
+                      onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { handleLink(e, node.attribs.href); }}
+                    >{node.children[0].data}</a>
                   ]);
                 }
               },
               {
-                shouldProcessNode: (node) => { return node.name && node.name === 'pre'; },
-                processNode: (node, children, index) => {
+                shouldProcessNode: (node: any) => { return node.name && node.name === 'pre'; },
+                processNode: (node: any, _children: any[], index: number) => {
                   return React.createElement(React.Fragment, {key: index,}, [
                     <Code
                       key={index}
                       text={node.children[0].data}
-                      openConsole={handleShowConsole}
+                      openConsole={() => { handleShowConsole(); }}
                     />
+                  ]);
+                }
+              },
+              {
+                shouldProcessNode: (node: any) => { return node.name && node.name === 'body'; },
+                processNode: (_node: any, children: any[], index: number) => {
+                  return React.createElement(React.Fragment, {key: index,}, [
+                    <Fragment key={index}>{children}</Fragment>
                   ]);
                 }
               },
@@ -118,7 +131,7 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
     }
   }, [url, aliases]);
 
-  const handleLink = (e, url: string) => {
+  const handleLink = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string) => {
     if (aliases?.length) {
       const drupalPath = aliases.find((page) => { return page.attributes.alias === url});
       if (drupalPath) {
@@ -129,11 +142,11 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
     }
   }
 
-  const handleTab = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTab = (newValue: number): void => {
     setSelectedTab(newValue);
   };
 
-  const handleShowConsole = () => {
+  const handleShowConsole = (): void => {
     setShowCodeDrawer(true);
   }
 
@@ -152,7 +165,7 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   return (
     <Box>
       <Stack direction="row">
-        <Tabs value={selectedTab} onChange={handleTab} sx={{flexGrow: 1}}>
+        <Tabs value={selectedTab} onChange={() => {handleTab(selectedTab)}} sx={{flexGrow: 1}}>
           {navMenu && navMenu
             .filter((item) => { return item.attributes.menu_name === section && item.attributes.parent === null })
             .sort((a, b) => { return a.attributes.weight < b.attributes.weight ? -1 : 1 })

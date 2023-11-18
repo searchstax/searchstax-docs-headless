@@ -1,5 +1,5 @@
 import type { suggestResults } from '../interface/suggestResults';
-import { config }  from '../config.js';
+import { config }  from '../config.ts';
 
 export const suggest = async (
   search: string,

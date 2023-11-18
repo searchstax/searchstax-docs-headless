@@ -4,7 +4,7 @@ import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom"
 
 import { fetchNavMenu } from "../../api/drupal";
 
-import type { menuLink } from '../interface/drupal';
+import type { menuLink } from '../../interface/drupal';
 
 import Docs from '../Docs/Docs';
 import Footer from '../Footer/Footer';
@@ -19,7 +19,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 function App() {
-  const [navMenu, setNavMenu] = useState<menuLink[] | null>(null);
+  const [navMenu, setNavMenu] = useState<menuLink[] | undefined>(undefined);
   const [section, setSection] = useState<string>('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +32,7 @@ function App() {
   });
 
   useEffect(() => {
-    if (navMenu === null) {
+    if (navMenu === undefined) {
       void fetchNavMenu().then((data: menuLink[]) => {
         setNavMenu(data);
       })
@@ -59,11 +59,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <AppBar position="fixed" sx={{ backgroundColor: '#FFF', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar sx={{display: 'flex', height: 90}}>
-            <Box
-              sx={{maxHeight: 30, mr: 3}}
-              component="img"
-              src="/logo.svg"
-            />
+            <Link to="/">
+              <Box
+                sx={{maxHeight: 30, mt: 1, mr: 3}}
+                component="img"
+                src="/logo.svg"
+              />
+            </Link>
             <Box sx={{flexGrow: 1}}>
               {navMenu && navMenu
                 .filter((item) => { return item.attributes.menu_name === 'main' })
@@ -74,7 +76,7 @@ function App() {
                   component={Link}
                   to={menu.attributes.link.uri.replace('internal:','')}
                   sx={{ color: '#222' }}
-                  variant={section !== '' && menu.attributes.link.uri.replace('internal:','').startsWith(`/${section}`) ? 'contained' : ''}
+                  variant={section !== '' && menu.attributes.link.uri.replace('internal:','').startsWith(`/${section}`) ? 'contained' : 'text'}
                 >
                     {menu.attributes.title}
                 </Button>
@@ -88,8 +90,7 @@ function App() {
         <Box sx={{mt: 12, minHeight: 'calc(100vh - 26.8rem)'}}>
           <Routes>
             <Route path="/">
-              <Route index element={<Box />} />
-              <Route path="docs" element={<Docs url={location.pathname} />} />
+              <Route index element={<Docs url="/home" navMenu={navMenu} section={section} />} />
               <Route path="search" element={<Search />} />
               <Route path="*" element={<Docs url={location.pathname} navMenu={navMenu} section={section} />} />
             </Route>

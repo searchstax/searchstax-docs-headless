@@ -1,7 +1,7 @@
 composer require drush/drush
 composer config minimum-stability dev
 composer config prefer-stable true
-vendor/bin/drush si --db-url=pgsql://drupaluser:drupalpassword@host.docker.internal:5434/drupaldb --site-name="SearchStax Demo" -y
+vendor/bin/drush si --db-url=mysql://drupal:drupal@searchstax-docs-headless-db:3306/drupal --site-name="SearchStax Documentation" -y
 vendor/bin/drush cset system.performance css.preprocess false --input-format=yaml -y
 vendor/bin/drush cset system.performance js.preprocess false --input-format=yaml -y
 vendor/bin/drush upwd admin "searchstax"

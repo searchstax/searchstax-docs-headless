@@ -1,0 +1,1 @@
+mysqldump --defaults-extra-file=/usr/local/bin/config.cnf --no-tablespaces -e drupal > /usr/local/bin/database.sql

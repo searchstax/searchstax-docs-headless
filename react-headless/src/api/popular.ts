@@ -1,5 +1,5 @@
 import type { popularResults } from '../interface/popularResults';
-import { config }  from '../config.js';
+import { config }  from '../config.ts';
 
 export const popular = async (
   language: string = ''

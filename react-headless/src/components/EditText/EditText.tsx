@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './EditText.css'
 
 // MUI
@@ -9,7 +9,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 // MUI Icons
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 
-function EditText(props: { text?: string, fieldName?: string, update: void }) {
+function EditText(props: { text?: string, fieldName?: string, update: (fieldName: string, fieldValue: string) => void }) {
   const {
     text = '',
     fieldName = '',

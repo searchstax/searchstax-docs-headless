@@ -22,8 +22,6 @@ function beforeAutosuggest(props: ISearchstaxSuggestProps) {
 
 function InputTemplate(
     suggestions: ISearchstaxSuggestion[],
-    onMouseLeave: () => void,
-    onMouseOver: (suggestion: ISearchstaxSuggestion) => void,
     onMouseClick: () => void
   ): React.ReactElement {
     
@@ -35,7 +33,6 @@ function InputTemplate(
           options={suggestions.map((suggestion) => suggestion.term)}
           renderInput={(params) => 
             <TextField
-              id="searchstax-search-input"
               label="Search For..."
               onClick={() => {
                 onMouseClick();

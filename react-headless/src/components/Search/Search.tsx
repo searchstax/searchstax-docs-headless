@@ -9,7 +9,7 @@ import type {
   ISearchstaxParsedResult,
 
 } from "@searchstax-inc/searchstudio-ux-js";
-import { config }  from '../../config.js';
+import { config }  from '../../config.ts';
 import PaginationWidget from "../../widgets/SearchstaxPaginationWidget.tsx";
 import OverviewWidget from "../../widgets/SearchstaxOverviewWidget.tsx";
 import SortingWidget from "../../widgets/SearchstaxSortingWidget.tsx";

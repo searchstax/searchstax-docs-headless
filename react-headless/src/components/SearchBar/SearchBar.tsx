@@ -119,7 +119,6 @@ function SearchBar(props: { section?: string}) {
         />
         {suggestedTerms.length && suggestedTerms.length > 0 ? (
           <Box
-            variant="outlined"
             sx={{position: 'absolute', top: 'calc(100% - 2px)', left: 5, right: 5, border: 'solid', borderWidth: '1px', borderColor: '#222', backgroundColor: '#FFF'}}
           >
             <List dense={true} component="nav">

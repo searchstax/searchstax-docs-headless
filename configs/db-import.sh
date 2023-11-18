@@ -1,0 +1,1 @@
+mysql --defaults-extra-file=/usr/local/bin/config.cnf drupal < /usr/local/bin/database.sql

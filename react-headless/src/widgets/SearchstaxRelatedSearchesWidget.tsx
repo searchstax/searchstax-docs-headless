@@ -1,6 +1,6 @@
 import { SearchstaxRelatedSearchesWidget } from "@searchstax-inc/searchstudio-ux-react";
 
-import { config } from '../config.js';
+import { config } from '../config.ts';
 
 import type {
     ISearchstaxRelatedSearchesData,

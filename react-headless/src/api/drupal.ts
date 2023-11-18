@@ -7,9 +7,10 @@ menu_link_content endpoint requires 'Administer menus and menu links' permission
 export const fetchNavMenu = async (
 ): Promise<menuLink[]> => {
   let url = new URL(`${import.meta.env.VITE_DRUPAL_API ?? ''}/jsonapi/menu_link_content/menu_link_content`);
-  let data = <menuLink>[]
+  let data = <menuLink[]>[]
+  let getPage = true;
 
-  while (url !== '') {
+  while (getPage) {
     const response = await fetch(url.href, {
       method: 'get',
     })
@@ -27,7 +28,7 @@ export const fetchNavMenu = async (
       url = new URL(response.links.next.href);
     }
     else {
-      url = '';
+      getPage = false;
       break;
     }
   }
@@ -65,9 +66,10 @@ path_alias endpoint requires 'Administer URL aliases' permission for anonymous u
 export const fetchAliases = async (
 ): Promise<urlAlias[]> => {
   let url = new URL(`${import.meta.env.VITE_DRUPAL_API ?? ''}/jsonapi/path_alias/path_alias/`);
-  let data = <urlAlias>[]
+  let data = <urlAlias[]>([])
+  let getPage = true;
 
-  while (url !== '') {
+  while (getPage) {
     const response = await fetch(url.href, {
       method: 'get',
     })
@@ -85,7 +87,7 @@ export const fetchAliases = async (
       url = new URL(response.links.next.href);
     }
     else {
-      url = '';
+      getPage = false;
       break;
     }
   }

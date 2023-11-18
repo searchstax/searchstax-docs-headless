@@ -3,7 +3,7 @@ import './Curl.css'
 
 import EditText from '../EditText/EditText';
 
-import { config }  from '../../config.js';
+import { config }  from '../../config.ts';
 
 // MUI
 import Accordion from '@mui/material/Accordion';
@@ -55,7 +55,7 @@ function Curl(props: { url?: string }) {
       setUrlLoading(true);
       setRequestError('');
       setUrlResponse({});
-      const headers = {};
+      const headers: any = {};
       requestHeaders.forEach((item) => {
         headers[item.field] = item.value;
       });
@@ -83,7 +83,7 @@ function Curl(props: { url?: string }) {
   }
 
   const addHeader = () => {
-    if (headerField !== '' & headerValue !== '') {
+    if (headerField !== '' && headerValue !== '') {
       setRequestHeaders([
         ...requestHeaders,
         {
@@ -182,7 +182,7 @@ function Curl(props: { url?: string }) {
                       <TableRow key={key}>
                         <TableCell>{header.field}</TableCell>
                         <TableCell>
-                          <EditText text={header.value} fieldName={header.field} update={updateHeader} />
+                          <EditText text={header.value} fieldName={header.field} update={() => updateHeader(header.value, header.field)} />
                         </TableCell>
                         <TableCell align="right">
                           <IconButton onClick={() => { removeHeader(header.field); }}>
@@ -203,7 +203,7 @@ function Curl(props: { url?: string }) {
               color="primary"
               value={requestType}
               exclusive
-              onChange={(e) => { setRequestType(e.target.value); }}
+              onChange={(e: React.MouseEvent<HTMLElement, MouseEvent>) => { setRequestType((e.target as HTMLInputElement).value); }}
               size="small"
             >
               <ToggleButton value="GET">GET</ToggleButton>

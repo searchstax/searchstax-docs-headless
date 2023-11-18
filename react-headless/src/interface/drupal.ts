@@ -37,19 +37,17 @@ export interface article {
         summary: string,
       }
     },
-  },
+  } [],
 }
 
 export interface urlAlias {
-  data: {
-    type: string,
-    id: string,
-    attributes: {
-      drupal_internal__id: number,
-      langcode: string,
-      path: string,
-      alias: string,
+  type: string,
+  id: string,
+  attributes: {
+    drupal_internal__id: number,
+    langcode: string,
+    path: string,
+    alias: string,
 
-    },
-  } [],
+  },
 }

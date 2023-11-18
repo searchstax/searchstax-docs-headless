@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import './Code.css'
 
 // MUI
@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import TerminalIcon from '@mui/icons-material/Terminal';
 
-function Code(props: { text?: string, openConsole?: void }) {
+function Code(props: { text?: string, openConsole?: () => void }) {
   const {
     text = '',
     openConsole
@@ -35,7 +35,7 @@ function Code(props: { text?: string, openConsole?: void }) {
         <Stack direction="row">
           <Button
             startIcon={<TerminalIcon />}
-            onClick={() => { openConsole(); }}
+            onClick={() => { openConsole && openConsole(); }}
             variant="contained"
             disableElevation
             sx={{ borderRadius: 0 }}
