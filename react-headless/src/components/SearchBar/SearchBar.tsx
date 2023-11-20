@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { suggest } from '../../api/suggest';
 
 import type { suggestion } from '../../interface/suggestResults';
+import type { siteSection } from '../../interface/navigation';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -22,17 +23,17 @@ import SearchIcon from '@mui/icons-material/Search';
 
 let debounce = setTimeout(() => {}, 0);
 
-function SearchBar(props: { section?: string}) {
+function SearchBar(props: { section?: siteSection}) {
   const {
-    section = '',
+    section = {menu: '', url: '', sectionURL: ''},
   } = props;
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [facet, setFacet] = useState<string>(section);
+  const [facet, setFacet] = useState<string>(section.menu);
   const [suggestedTerms, setSuggestedTerms] = useState<suggestion[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFacet(section);
+    setFacet(section.menu);
   }, [section]);
 
   const clearSearch = () => {

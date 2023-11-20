@@ -5,6 +5,7 @@ import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom"
 import { fetchNavMenu } from "../../api/drupal";
 
 import type { menuLink } from '../../interface/drupal';
+import type { siteSection } from '../../interface/navigation';
 
 import Docs from '../Docs/Docs';
 import Footer from '../Footer/Footer';
@@ -20,7 +21,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 function App() {
   const [navMenu, setNavMenu] = useState<menuLink[] | undefined>(undefined);
-  const [section, setSection] = useState<string>('');
+  const [section, setSection] = useState<siteSection>({menu: '', url: '', sectionURL: ''});
   const navigate = useNavigate();
   const location = useLocation();
   const theme = createTheme({
@@ -44,15 +45,15 @@ function App() {
       navigate('/search');
     }
     if (location.pathname.startsWith('/docs/searchstudio')) {
-      setSection('studio');
+      setSection({menu: 'studio', url: location.pathname, sectionURL: '/docs/searchstudio'});
     }
-    else if (location.pathname.startsWith('/cloud')) {
-      setSection('cloud');
+    else if (location.pathname.startsWith('/docs/searchstax')) {
+      setSection({menu: 'cloud', url: location.pathname, sectionURL: '/docs/searchstax-cloud'});
     }
     else {
-      setSection('');
+      setSection({menu: '', url: '', sectionURL: ''});
     }
-  }, [location, navigate]);
+  }, [location.pathname, navigate]);
 
   return (
     <div className="App">
@@ -63,7 +64,7 @@ function App() {
               <Box
                 sx={{maxHeight: 30, mt: 1, mr: 3}}
                 component="img"
-                src="/logo.svg"
+                src="https://www.searchstax.com/wp-content/uploads/2022/02/logo.svg"
               />
             </Link>
             <Box sx={{flexGrow: 1}}>
@@ -76,7 +77,7 @@ function App() {
                   component={Link}
                   to={menu.attributes.link.uri.replace('internal:','')}
                   sx={{ color: '#222' }}
-                  variant={section !== '' && menu.attributes.link.uri.replace('internal:','').startsWith(`/${section}`) ? 'contained' : 'text'}
+                  variant={section.sectionURL !== '' && menu.attributes.link.uri.replace('internal:','').startsWith(section.sectionURL) ? 'contained' : 'text'}
                 >
                     {menu.attributes.title}
                 </Button>

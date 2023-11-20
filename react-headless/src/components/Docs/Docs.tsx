@@ -8,6 +8,7 @@ import { popular } from '../../api/popular';
 
 import type { popularResult } from '../../interface/popularResults';
 import type { article, menuLink, urlAlias } from '../../interface/drupal';
+import type { siteSection } from '../../interface/navigation';
 
 import Curl from '../Curl/Curl';
 import Code from '../Code/Code';
@@ -33,21 +34,22 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TerminalIcon from '@mui/icons-material/Terminal';
 
-function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
+function Docs(props: { url?: string, section?: siteSection, navMenu?: menuLink[] }) {
   const {
     url = '',
-    section = '',
+    section = {menu: '', url: ''},
     navMenu = undefined,
   } = props;
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [aliases, setAliases] = useState<urlAlias[] | undefined>([]);
   const [showCodeDrawer, setShowCodeDrawer] = useState<boolean>(false);
   const [reactContent, setReactContent] = useState(null);
+  const [currentSection, setCurrentSection] = useState('');
   const [menuParentID, setMenuParentID] = useState<string>('');
   const [popularResults, setPopularSearches] = useState<popularResult[]>([]);
-  const navigate = useNavigate();
   const [scrollTarget] = useState<Node | Window | undefined>()
   const scrollToTopTrigger = useScrollTrigger({ target: scrollTarget });
+  const navigate = useNavigate();
 
   useEffect(() => {
     void fetchAliases().then((data: urlAlias[]) => {
@@ -59,16 +61,23 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   }, []);
 
   useEffect(() => {
-    if (navMenu !== undefined && section !== '') {
-      const firstMenuItem = navMenu
-        .filter((item) => { return item.attributes.menu_name === section && item.attributes.parent === null })
-        .sort((a, b) => { return a.attributes.weight < b.attributes.weight ? -1 : 1 })[0];
-      setMenuParentID(firstMenuItem.id);
-      setSelectedTab(0);
-    }
-    else {
-      setMenuParentID('-1');
-      setSelectedTab(0);
+    if (navMenu !== undefined) {
+      if (section.menu !== '') {
+        if (section.menu !== currentSection) {
+          setMenuParentID('-1');
+          setSelectedTab(0);
+          const firstMenuItem = navMenu
+            .filter((item) => { return item.attributes.menu_name === section.menu && item.attributes.parent === null })
+            .sort((a, b) => { return a.attributes.weight < b.attributes.weight ? -1 : 1 })[0];
+          setMenuParentID(firstMenuItem.id);
+          setSelectedTab(0);
+          setCurrentSection(section.menu);
+        }
+      }
+      else {
+        setMenuParentID('-1');
+        setSelectedTab(0);
+      }
     }
   }, [navMenu, section]);
 
@@ -77,7 +86,6 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
       const drupalPath = aliases.find((page) => { return page.attributes.alias === url});
       if (drupalPath) {
         void fetchArticleFromID(drupalPath.attributes.path.replace('/node/','')).then((data: article) => {
-          console.log(data);
           if (data.data) {
             if (data.data[0].attributes.title) {
               document.title = data.data[0].attributes.title;
@@ -142,7 +150,7 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
     }
   }
 
-  const handleTab = (newValue: number): void => {
+  const handleTab = (_e: any, newValue: number): void => {
     setSelectedTab(newValue);
   };
 
@@ -165,9 +173,9 @@ function Docs(props: { url?: string, section?: string, navMenu?: menuLink[] }) {
   return (
     <Box>
       <Stack direction="row">
-        <Tabs value={selectedTab} onChange={() => {handleTab(selectedTab)}} sx={{flexGrow: 1}}>
+        <Tabs value={selectedTab} onChange={handleTab} sx={{flexGrow: 1}}>
           {navMenu && navMenu
-            .filter((item) => { return item.attributes.menu_name === section && item.attributes.parent === null })
+            .filter((item) => { return item.attributes.menu_name === section.menu && item.attributes.parent === null })
             .sort((a, b) => { return a.attributes.weight < b.attributes.weight ? -1 : 1 })
             .map((menu, index) => (
               <Tab

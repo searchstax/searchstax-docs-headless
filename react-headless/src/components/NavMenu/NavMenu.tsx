@@ -22,7 +22,7 @@ function NavMenu(props: { itemID?: string, navMenu?: menuLink[], aliases?: urlAl
     level = 0,
   } = props;
   const [item, setItem] = useState<menuLink | undefined>(undefined);
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(level < 1);
   const [subItems, setSubItems] = useState<menuLink[]>([]);
 
   useEffect(() => {
