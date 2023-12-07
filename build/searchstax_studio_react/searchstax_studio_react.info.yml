@@ -1,4 +1,0 @@
-name: SearchStax Studio React Search Page
-description: Custom module for SearchStax Studio React Search Page
-type: module
-core_version_requirement: ^8 || ^9 || ^10
