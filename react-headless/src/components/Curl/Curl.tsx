@@ -182,7 +182,11 @@ function Curl(props: { url?: string }) {
                       <TableRow key={key}>
                         <TableCell>{header.field}</TableCell>
                         <TableCell>
-                          <EditText text={header.value} fieldName={header.field} update={() => updateHeader(header.value, header.field)} />
+                          <EditText
+                            text={header.value}
+                            fieldName={header.field}
+                            update={(fieldName, fieldValue) => updateHeader(fieldName, fieldValue)}
+                          />
                         </TableCell>
                         <TableCell align="right">
                           <IconButton onClick={() => { removeHeader(header.field); }}>

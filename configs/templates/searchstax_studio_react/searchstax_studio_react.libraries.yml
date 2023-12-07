@@ -4,6 +4,7 @@ searchstax_studio_react-app:
   js:
     dist/app.js: {}
     dist/chunks.js: {}
+    dist/redirect.js: {}
   css:
     theme:
       dist/app.css: {}

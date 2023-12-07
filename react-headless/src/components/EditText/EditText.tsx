@@ -26,12 +26,12 @@ function EditText(props: { text?: string, fieldName?: string, update: (fieldName
       endAdornment={
         <InputAdornment position="end">
           {text !== fieldValue ? (
-            <IconButton>
-              <SaveAsIcon
-                onClick={() => {
-                  update(fieldName, fieldValue); 
-                }}
-              />
+            <IconButton
+              onClick={() => {
+                update(fieldName, fieldValue); 
+              }}
+            >
+              <SaveAsIcon />
             </IconButton>
           ) : ''}
         </InputAdornment>

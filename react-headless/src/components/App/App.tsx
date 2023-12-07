@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { fetchNavMenu } from "../../api/drupal";
 
@@ -24,6 +24,7 @@ function App() {
   const [section, setSection] = useState<siteSection>({menu: '', url: '', sectionURL: ''});
   const navigate = useNavigate();
   const location = useLocation();
+  const [params] = useSearchParams();
   const theme = createTheme({
     palette: {
       primary: {
@@ -39,6 +40,13 @@ function App() {
       })
     }
   }, [navMenu]);
+
+  useEffect(() => {
+    const urlParam = params.get('url');
+    if (urlParam !== null) {
+      navigate(urlParam);
+    }
+  }, [params]);
 
   useEffect(() => {
     if (location.search.includes('searchstax[query]') && !location.pathname.includes('/search')) {

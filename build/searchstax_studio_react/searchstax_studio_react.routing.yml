@@ -1,0 +1,6 @@
+searchstax_studio_react.search_page:
+  path: '/searchstax-studio-react'
+  defaults:
+    _controller: '\Drupal\searchstax_studio_react\Controller\SearchstaxStudioReactController::searchPage'
+  requirements:
+    _permission: 'access content'
